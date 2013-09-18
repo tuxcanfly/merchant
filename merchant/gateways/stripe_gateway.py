@@ -3,6 +3,7 @@ import stripe
 from merchant import Gateway, GatewayNotConfigured
 from merchant.utils.credit_card import (InvalidCard, Visa, MasterCard,
                                         AmericanExpress, Discover, CreditCard)
+from merchant.decorators import raise_signal
 
 
 class StripeGateway(Gateway):
@@ -17,6 +18,7 @@ class StripeGateway(Gateway):
         stripe.api_key = settings['API_KEY']
         self.stripe = stripe
 
+    @raise_signal
     def purchase(self, amount, credit_card, options=None):
         card = credit_card
         if isinstance(credit_card, CreditCard):
@@ -37,6 +39,7 @@ class StripeGateway(Gateway):
             return {'status': 'FAILURE', 'response': error}
         return {'status': 'SUCCESS', 'response': response}
 
+    @raise_signal
     def store(self, credit_card, options=None):
         card = credit_card
         if isinstance(credit_card, CreditCard):
@@ -54,6 +57,7 @@ class StripeGateway(Gateway):
             return {'status': 'FAILURE', 'response': error}
         return {'status': 'SUCCESS', 'response': customer}
 
+    @raise_signal
     def recurring(self, credit_card, options=None):
         card = credit_card
         if isinstance(credit_card, CreditCard):
@@ -81,6 +85,7 @@ class StripeGateway(Gateway):
         except TypeError, error:
             return {"status": "FAILURE", "response": "Missing Plan Id"}
 
+    @raise_signal
     def unstore(self, identification, options=None):
         try:
             customer = self.stripe.Customer.retrieve(identification)
@@ -89,6 +94,7 @@ class StripeGateway(Gateway):
         except self.stripe.InvalidRequestError, error:
             return {"status": "FAILURE", "response": error}
 
+    @raise_signal
     def credit(self, identification, money=None, options=None):
         try:
             charge = self.stripe.Charge.retrieve(identification)
@@ -97,6 +103,7 @@ class StripeGateway(Gateway):
         except self.stripe.InvalidRequestError, error:
             return {"status": "FAILURE", "error": error}
 
+    @raise_signal
     def authorize(self, money, credit_card, options=None):
         card = credit_card
         if isinstance(credit_card, CreditCard):
@@ -117,6 +124,7 @@ class StripeGateway(Gateway):
         except self.stripe.InvalidRequestError, error:
             return {"status": "FAILURE", "response": error}
 
+    @raise_signal
     def capture(self, money, authorization, options=None):
         try:
             response = self.stripe.Charge.create(

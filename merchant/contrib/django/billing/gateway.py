@@ -1,11 +1,10 @@
 from django.utils.importlib import import_module
 
 from merchant.contrib.django.billing.conf import settings
-from merchant.gateway import (
+from merchant.gateway import Gateway
+from merchant.exceptions import (
     GatewayModuleNotFound,
     GatewayNotConfigured,
-    InvalidData,
-    Gateway
 )
 from merchant.utils.credit_card import CardNotSupported
 

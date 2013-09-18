@@ -2,22 +2,11 @@ import sys
 
 from importlib import import_module
 
-from .conf import settings
-from .utils.credit_card import CardNotSupported
+from merchant.conf import settings
+from merchant.exceptions import GatewayNotConfigured
+from merchant.utils.credit_card import CardNotSupported
 
 gateway_cache = {}
-
-
-class GatewayModuleNotFound(Exception):
-    pass
-
-
-class GatewayNotConfigured(Exception):
-    pass
-
-
-class InvalidData(Exception):
-    pass
 
 
 class Gateway(object):
